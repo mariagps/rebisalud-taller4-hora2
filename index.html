@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Alfabetización IA para usuarios | REBISALUD</title>
+<style>
+:root {
+  --navy: #1B3A5C;
+  --blue: #7C3AED;
+  --teal: #8B5CF6;
+  --light-blue: #F5F3FF;
+  --gray-bg: #F0F2F5;
+  --gray-text: #64748B;
+  --white: #FFFFFF;
+  --shadow: 0 4px 24px rgba(27, 58, 92, 0.10);
+  --shadow-hover: 0 8px 32px rgba(27, 58, 92, 0.16);
+  --radius: 12px;
+  --sidebar-w: 260px;
+}
+
+html { font-size: 13px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Montserrat', -apple-system, sans-serif;
+  background: var(--gray-bg);
+  color: var(--navy);
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 40%, var(--teal) 70%, #EDE9FE 90%);
+  color: white;
+  padding: 2rem 2rem 1.5rem;
+  position: relative;
+  margin-left: var(--sidebar-w);
+}
+.header-logo {
+  position: absolute;
+  top: 0; right: 1.5rem;
+  height: 100%;
+  padding: 0.8rem 0;
+  opacity: 0.92;
+}
+.header-text { padding-right: 130px; }
+.header-congress {
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 0.4rem;
+}
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.4rem;
+}
+.header-meta {
+  font-size: 0.82rem;
+  font-weight: 300;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+.header-meta strong { font-weight: 500; opacity: 1; }
+.header-meta a { color: white; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--white);
+  border-right: 1px solid #E2E8F0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-header {
+  padding: 1.2rem 1rem 0.8rem;
+  border-bottom: 1px solid #E2E8F0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+}
+.sidebar-nav { padding: 0.6rem 0; flex: 1; }
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  color: var(--navy);
+  font-size: 0.8rem;
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+}
+.sidebar-nav a:hover {
+  background: var(--gray-bg);
+  border-left-color: var(--teal);
+}
+.sidebar-nav a.active {
+  background: var(--light-blue);
+  border-left-color: var(--blue);
+  font-weight: 600;
+}
+.sidebar-nav a .nav-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--gray-bg);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-nav a.active .nav-num {
+  background: var(--blue);
+  color: white;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  margin-left: var(--sidebar-w);
+  padding: 2rem 2.5rem 4rem;
+  max-width: calc(var(--sidebar-w) + 900px);
+}
+
+/* ===== BLOCKS ===== */
+.block {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  scroll-margin-top: 1.5rem;
+}
+.block-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.block-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.block-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.block-meta {
+  font-size: 0.78rem;
+  color: var(--gray-text);
+  font-weight: 400;
+  margin-left: 0.3rem;
+}
+.block p {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+.block h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--navy);
+}
+.block h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 1.2rem 0 0.4rem;
+  color: var(--blue);
+}
+.block ul, .block ol {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin: 0 0 1rem 1.2rem;
+}
+
+/* ===== INFO BOX ===== */
+.info-box {
+  background: #FFFBEB;
+  border: 1px solid #F59E0B;
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.info-box strong { color: #92400E; }
+
+/* ===== STEP BOX ===== */
+.step-box {
+  background: var(--light-blue);
+  border: 1px solid #DDD6FE;
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.step-box strong { color: #5B21B6; }
+
+/* ===== ERROR BOX ===== */
+.error-box {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.error-box strong { color: #991B1B; }
+
+/* ===== TABLES ===== */
+.block table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+.block th {
+  background: var(--light-blue);
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  border-bottom: 2px solid var(--blue);
+}
+.block td {
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-left: var(--sidebar-w);
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid #E2E8F0;
+  background: var(--white);
+}
+.footer img { height: 30px; opacity: 0.6; margin-bottom: 0.5rem; }
+.footer p {
+  font-size: 0.75rem;
+  color: var(--gray-text);
+  line-height: 1.6;
+}
+.footer a { color: var(--blue); text-decoration: none; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .header, .main, .footer { margin-left: 0; }
+  .header-text { padding-right: 80px; }
+  .header-logo { height: 60px; top: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar">
+  <div class="sidebar-header">Sesión 4 &middot; Hora 2</div>
+  <div class="sidebar-nav">
+    <a href="#intro"><span class="nav-num">0</span> Introducción</a>
+    <a href="#bloque1"><span class="nav-num">1</span> Conoce a tu público</a>
+    <a href="#bloque2"><span class="nav-num">2</span> Diseña con ayuda de la IA</a>
+    <a href="#bloque3"><span class="nav-num">3</span> Errores frecuentes</a>
+    <a href="#bloque4"><span class="nav-num">4</span> Ejercicio y evaluación</a>
+  </div>
+</nav>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <img src="alterbiblio-logo.png" alt="AlterBiblio" class="header-logo">
+  <div class="header-text">
+    <div class="header-congress">REBISALUD &middot; Sesión 4 &middot; Hora 2</div>
+    <h1>Alfabetización IA para usuarios</h1>
+    <div class="header-meta">
+      <strong><a href="https://www.linkedin.com/in/mariagps/" target="_blank">María García-Puente</a></strong> &middot; AlterBiblio<br>
+      Taller de inteligencia artificial para bibliotecarios de ciencias de la salud
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+  <!-- INTRO -->
+  <section class="block" id="intro">
+    <div class="block-header">
+      <span class="block-num">0</span>
+      <div><span class="block-title">El bibliotecario como formador en IA</span></div>
+    </div>
+
+    <p>A lo largo de este curso habéis aprendido a buscar, extraer, sintetizar y comunicar usando herramientas de IA. Pero hay algo que probablemente ya habéis pensado: <strong>vuestros usuarios también necesitan saber esto</strong>.</p>
+
+    <p>Y estáis en una posición privilegiada para enseñárselo:</p>
+    <ul>
+      <li><strong>Conocéis sus necesidades:</strong> sabéis qué buscan, qué preguntas os hacen, dónde se atascan</li>
+      <li><strong>Tenéis credibilidad:</strong> sois el servicio que les resuelve dudas de información, no alguien que viene de fuera a "venderles" una herramienta</li>
+      <li><strong>Sabéis filtrar:</strong> vuestra formación os entrena para evaluar fuentes, detectar sesgos y verificar datos &mdash; exactamente lo que hace falta con la IA</li>
+    </ul>
+
+    <p>Eso sí, para enseñar IA hay que entenderla. Y vosotros ya habéis empezado: en las sesiones anteriores habéis usado herramientas de búsqueda, extracción, síntesis y presentación. Esa experiencia directa es vuestra mejor base. A partir de aquí, seguid practicando por vuestra cuenta, leed lo que se publica sobre IA en vuestro ámbito, y no olvidéis que podéis preguntarle a la propia IA para aprender más sobre ella: pedirle que os explique un concepto, que os sugiera casos de uso para vuestra biblioteca o que os ayude a preparar una demo.</p>
+
+    <p>En esta hora vamos a diseñar una sesión de formación en IA para vuestros usuarios. No una sesión genérica, sino una pensada para vuestro público concreto, con un caso real de vuestro servicio.</p>
+
+    <h3>Qué vamos a hacer</h3>
+    <ol>
+      <li>Analizar quién es vuestro público y qué necesita</li>
+      <li>Usar la IA como herramienta de diseño (que os haga preguntas para ayudaros a pensar la sesión)</li>
+      <li>Conocer los errores más frecuentes al formar en IA</li>
+      <li>Diseñar el esquema de vuestra propia sesión</li>
+    </ol>
+  </section>
+
+  <!-- BLOQUE 1: Conoce a tu público -->
+  <section class="block" id="bloque1">
+    <div class="block-header">
+      <span class="block-num">1</span>
+      <div><span class="block-title">Conoce a tu público</span></div>
+    </div>
+
+    <p>Antes de diseñar nada, necesitáis responder a cuatro preguntas sobre las personas que se sentarán delante de vosotros:</p>
+
+    <h4>1. ¿Quiénes son?</h4>
+    <p>No es lo mismo formar a residentes de primer año que a jefes de servicio. Ni a investigadores que a personal de gestión. Ni a estudiantes de grado que a profesores universitarios. Pensad en un grupo concreto, no en "todos los usuarios de mi biblioteca".</p>
+
+    <h4>2. ¿Qué saben ya de IA?</h4>
+    <ul>
+      <li>Nunca han tocado ChatGPT &rarr; necesitan empezar desde cero</li>
+      <li>Lo usan por su cuenta pero sin criterio &rarr; necesitan aprender a verificar</li>
+      <li>Ya lo usan bien para texto pero no para búsqueda bibliográfica &rarr; necesitan herramientas específicas</li>
+    </ul>
+
+    <h4>3. ¿Qué necesitan resolver?</h4>
+    <p>Pensad en tareas concretas que os piden o que sabéis que hacen mal: buscar artículos para una sesión clínica, preparar una comunicación a un congreso, responder a un revisor, actualizar un protocolo, preparar una clase...</p>
+
+    <h4>4. ¿Qué miedos o resistencias tienen?</h4>
+    <ul>
+      <li>"La IA se inventa cosas" (y tienen razón, pero se puede gestionar)</li>
+      <li>"Me van a sustituir"</li>
+      <li>"No tengo tiempo de aprender otra herramienta"</li>
+      <li>"En mi hospital no está permitido" (¿es así realmente o es un rumor?)</li>
+    </ul>
+
+    <div class="info-box">
+      <strong>Ejercicio rápido (5 min):</strong> apuntad las respuestas a estas cuatro preguntas para un grupo concreto de vuestros usuarios. Las vais a necesitar en el bloque siguiente.
+    </div>
+  </section>
+
+  <!-- BLOQUE 2: Diseña con ayuda de la IA -->
+  <section class="block" id="bloque2">
+    <div class="block-header">
+      <span class="block-num">2</span>
+      <div><span class="block-title">Diseña tu sesión con ayuda de la IA</span></div>
+    </div>
+
+    <p>Ahora viene lo interesante: vais a usar la IA para que os ayude a diseñar la sesión. Pero no vamos a daros un prompt hecho: a estas alturas del curso, ya sabéis cómo hablar con una IA.</p>
+
+    <p>La idea es que le pidáis a Copilot (o a la herramienta que uséis) que <strong>os haga preguntas</strong> para ayudaros a pensar vuestra sesión. Igual que cuando un compañero os ayuda a preparar algo preguntándoos <em>"¿y esto lo has pensado?"</em>, <em>"¿qué pasaría si...?"</em>.</p>
+
+    <h3>Qué debería incluir vuestro prompt</h3>
+    <ul>
+      <li><strong>Qué rol</strong> queréis que adopte la IA (experto en formación, diseñador instruccional, compañero bibliotecario...)</li>
+      <li><strong>Que os haga preguntas una a una</strong>, no todo de golpe</li>
+      <li><strong>La información de contexto</strong> que ya tenéis: quién es vuestro público, qué saben, qué necesitan (lo que habéis apuntado en el bloque anterior)</li>
+      <li><strong>Qué queréis como resultado final</strong> (un esquema de sesión de 1 hora)</li>
+    </ul>
+
+    <p>No os cortéis con la longitud del prompt: cuanto más contexto le deis a la IA (vuestro público, las herramientas disponibles en el hospital, el tiempo que tenéis, lo que ha funcionado o no en formaciones anteriores), mejores preguntas os hará. Un buen prompt inicial puede tener un párrafo o dos sin problema.</p>
+
+    <h3>Pistas para guiar la conversación</h3>
+    <ul>
+      <li>Si la IA os propone algo demasiado genérico, pedid que lo concrete a vuestro contexto</li>
+      <li>Si os da demasiadas opciones, pedid que recomiende una y explique por qué</li>
+      <li>Si no os pregunta por algo importante (nivel del público, tiempo disponible, herramientas accesibles en el hospital), añadidlo vosotros</li>
+    </ul>
+
+    <div class="step-box">
+      <strong>Dedicad unos 15 minutos a esta conversación.</strong> No hace falta que lleguéis a un esquema perfecto: el objetivo es que practiquéis este modo de trabajar con la IA (haceros preguntas, iterar, refinar) y que salgáis con un borrador de sesión.
+    </div>
+  </section>
+
+  <!-- BLOQUE 3: Errores frecuentes -->
+  <section class="block" id="bloque3">
+    <div class="block-header">
+      <span class="block-num">3</span>
+      <div><span class="block-title">Errores frecuentes al formar en IA</span></div>
+    </div>
+
+    <p>Antes de cerrar el diseño, repasemos lo que no funciona cuando un bibliotecario da una formación en IA:</p>
+
+    <h4>1. Enseñar demasiadas herramientas</h4>
+    <p>Una sesión de 1 hora con Copilot, Elicit, NotebookLM, Gamma, Perplexity y SciSpace es un tour turístico: lo ven todo y no aprenden nada. Elegid 1-2 herramientas y trabajadlas a fondo con un caso real.</p>
+
+    <h4>2. Demasiada teoría, poca práctica</h4>
+    <p>Si vuestros usuarios pasan más de 20 minutos sin tocar el teclado, los habéis perdido. Mostrad lo imprescindible y dejadlos probar cuanto antes.</p>
+
+    <h4>3. No contextualizar al ámbito</h4>
+    <p>Una demo con un ejemplo de marketing o cocina no conecta con un clínico. Usad un caso de su especialidad: una pregunta real que os hayan hecho, un artículo que hayáis buscado para ellos, un protocolo de su servicio.</p>
+
+    <h4>4. No hablar de limitaciones</h4>
+    <p>Si no explicáis que la IA se inventa citas, que puede sesgar la selección de estudios o que no sustituye la lectura crítica, estáis haciendo un flaco favor. Vuestro valor añadido es precisamente enseñarles a usar la IA con criterio.</p>
+
+    <h4>5. No dejar tiempo para dudas</h4>
+    <p>Las preguntas más interesantes surgen cuando prueban. Reservad al menos 5-10 minutos al final para resolver dudas en directo.</p>
+  </section>
+
+  <!-- BLOQUE 4: Ejercicio y evaluación -->
+  <section class="block" id="bloque4">
+    <div class="block-header">
+      <span class="block-num">4</span>
+      <div><span class="block-title">Ejercicio y evaluación</span> <span class="block-meta">(20 min)</span></div>
+    </div>
+
+    <p>Vais a diseñar el esquema de una sesión de formación de 1 hora sobre IA para un grupo concreto de vuestros usuarios. Podéis partir del borrador que habéis trabajado con la IA en el bloque 2 y refinarlo.</p>
+
+    <h3>El esquema debe incluir</h3>
+    <ol>
+      <li><strong>Título</strong> de la sesión</li>
+      <li><strong>Público objetivo</strong> (quiénes, cuántos, qué saben de IA)</li>
+      <li><strong>Objetivo</strong> de la sesión (qué sabrán hacer al salir que no sabían al entrar)</li>
+      <li><strong>Herramientas</strong> que vais a usar (1-2 como máximo)</li>
+      <li><strong>Caso práctico</strong> que vais a trabajar (una tarea real de ese público)</li>
+      <li><strong>Estructura con tiempos</strong> (ej: 10 min intro, 5 min demo, 20 min práctica, 15 min puesta en común, 10 min dudas)</li>
+    </ol>
+
+    <div class="info-box">
+      <strong>Evaluación de esta sesión</strong><br><br>
+      Subid a Moodle el esquema de vuestra sesión (en cualquier formato: Word, PDF o texto libre). Si queréis, podéis añadir una reflexión breve sobre qué os ha aportado usar la IA para diseñar la formación, pero no es obligatorio.<br><br>
+      No evaluamos que el diseño sea perfecto, sino que hayáis pensado en vuestro público, elegido un caso real y planteado una estructura coherente.
+    </div>
+  </section>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <img src="alterbiblio-logo.png" alt="AlterBiblio">
+  <p>&copy; 2026 AlterBiblio &middot; <a href="https://www.linkedin.com/in/mariagps/" target="_blank">María García-Puente</a></p>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+if (new Date() > new Date('2026-04-10T23:59:59')) {
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Montserrat,sans-serif;background:#f5f5f5;text-align:center;padding:2rem"><div><h2 style="color:#5B21B6;margin-bottom:1rem">Contenido no disponible</h2><p style="color:#616161">El acceso a este material ha finalizado.<br>Para más información, contacta con <a href="mailto:maria@alterbiblio.com">maria@alterbiblio.com</a></p></div></div>';
+  throw new Error('expired');
+}
+
+// Active sidebar on scroll
+const sections = document.querySelectorAll('.block');
+const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>
