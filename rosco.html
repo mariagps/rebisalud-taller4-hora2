@@ -357,7 +357,7 @@ h1 {
           <span class="score-item correct-score" id="correctCount">0 aciertos</span>
           <span class="score-item wrong-score" id="wrongCount">0 fallos</span>
         </div>
-        <span class="score-item pending-score" id="pendingCount">27 pendientes</span>
+        <span class="score-item pending-score" id="pendingCount">23 pendientes</span>
       </div>
     </div>
   </div>
@@ -366,7 +366,7 @@ h1 {
     <!-- START SCREEN -->
     <div id="startScreen" style="text-align:center; padding: 1.5rem 0;">
       <p style="font-size:1rem; margin-bottom:0.5rem; font-weight:600;">Repasa lo aprendido en el curso</p>
-      <p id="startDesc" style="font-size:0.85rem; color:var(--gray); margin-bottom:1.5rem;">27 preguntas, una por cada letra.<br>Elige cómo quieres jugar:</p>
+      <p id="startDesc" style="font-size:0.85rem; color:var(--gray); margin-bottom:1.5rem;">23 preguntas, una por cada letra.<br>Elige cómo quieres jugar:</p>
 
       <div class="mode-selector">
         <button class="mode-btn" onclick="startGame('solo')">
@@ -431,29 +431,25 @@ const DEFAULT_QUESTIONS = [
   { letter: "A", prefix: "Empieza por A", q: "Proceso en el que una IA genera información falsa pero que suena convincente, como si fuera real.", a: "ALUCINACIÓN" },
   { letter: "B", prefix: "Empieza por B", q: "Tipo de búsqueda clásica en bases de datos que usa operadores como AND, OR y NOT.", a: "BOOLEANA" },
   { letter: "C", prefix: "Empieza por C", q: "Herramienta de búsqueda con IA que responde preguntas en lenguaje natural y muestra el porcentaje de artículos a favor o en contra.", a: "CONSENSUS" },
-  { letter: "D", prefix: "Empieza por D", q: "Proceso en PubMed por el cual un término ambiguo se aclara para que apunte al concepto correcto en MeSH.", a: "DESAMBIGUACIÓN" },
+  { letter: "D", prefix: "Empieza por D", q: "Conversación con la IA en la que vas dando más información para afinar el resultado, en vez de quedarte con la primera respuesta.", a: "DIÁLOGO" },
   { letter: "E", prefix: "Empieza por E", q: "Herramienta de IA que permite cribar artículos, extraer datos y construir tablas comparativas entre estudios.", a: "ELICIT" },
-  { letter: "F", prefix: "Empieza por F", q: "Tipo de pregunta clínica que se responde con datos concretos y no requiere búsqueda sistemática, por ejemplo una dosis o un protocolo.", a: "FOREGROUND" },
+  { letter: "F", prefix: "Empieza por F", q: "Origen de la información que siempre hay que comprobar cuando una IA te da un dato o una referencia.", a: "FUENTE" },
   { letter: "G", prefix: "Empieza por G", q: "Herramienta de IA que permite crear presentaciones ejecutivas a partir de textos, PDF o prompts.", a: "GAMMA" },
   { letter: "H", prefix: "Contiene la H", q: "Vocabulario controlado que utiliza PubMed para indexar artículos por temas biomédicos.", a: "MESH" },
-  { letter: "I", prefix: "Empieza por I", q: "Instrucción o texto que el usuario escribe para guiar a un modelo de lenguaje; en inglés se conoce como 'prompt' y en nuestro contexto hablamos de ingeniería de...", a: "INDICACIONES" },
-  { letter: "J", prefix: "Contiene la J", q: "En una tabla de extracción, las columnas representan variables y las filas representan cada uno de los artículos u...", a: "OBJETOS" },
+  { letter: "I", prefix: "Empieza por I", q: "Proceso de ir mejorando poco a poco la respuesta de la IA repitiendo y ajustando la petición.", a: "ITERACIÓN" },
   { letter: "K", prefix: "Contiene la K", q: "Plataforma de Elsevier integrada con IA que ofrece resúmenes clínicos y que muchos hospitales tienen contratada: Clinical___.", a: "KEY" },
   { letter: "L", prefix: "Empieza por L", q: "Siglas en inglés del tipo de modelo de IA que usamos para conversar (como ChatGPT o Claude): modelo grande de...", a: "LENGUAJE" },
   { letter: "M", prefix: "Empieza por M", q: "Base de datos bibliográfica más importante en biomedicina, gestionada por la National Library of Medicine.", a: "MEDLINE" },
   { letter: "N", prefix: "Empieza por N", q: "Herramienta de Google que funciona como cuaderno inteligente: le subes fuentes y puedes conversar con ellas, crear resúmenes o incluso podcasts.", a: "NOTEBOOKLM" },
-  { letter: "\u00d1", prefix: "Contiene la \u00d1", q: "Habilidad fundamental del bibliotecario de salud: enseñar a los usuarios a evaluar críticamente la información.", a: "ENSEÑANZA" },
   { letter: "O", prefix: "Empieza por O", q: "Herramienta de búsqueda con IA diseñada para preguntas clínicas rápidas, que ofrece un resumen con nivel de evidencia.", a: "OPENEVIDENCE" },
   { letter: "P", prefix: "Empieza por P", q: "Formato para estructurar una pregunta de investigación clínica: Paciente, Intervención, Comparación y Resultado.", a: "PICO" },
-  { letter: "Q", prefix: "Contiene la Q", q: "Capacidad de ir refinando una búsqueda o conversación con la IA paso a paso, sin quedarse con la primera respuesta. Se trata de repreguntar, es decir, de...", a: "RECONDUCIR" },
+  { letter: "Q", prefix: "Contiene la Q", q: "Acción central de todo el curso: localizar información científica relevante en bases de datos o herramientas de IA.", a: "BÚSQUEDA" },
   { letter: "R", prefix: "Empieza por R", q: "Cualidad de una estrategia de búsqueda bien documentada que permite que otra persona la repita y obtenga los mismos resultados.", a: "REPRODUCIBILIDAD" },
   { letter: "S", prefix: "Empieza por S", q: "Tipo de búsqueda que, a diferencia de la booleana, entiende el significado de las palabras y encuentra resultados relacionados aunque no usen los mismos términos exactos.", a: "SEMÁNTICA" },
   { letter: "T", prefix: "Empieza por T", q: "Práctica esencial al trabajar con IA: dejar registro de los prompts utilizados, las decisiones tomadas y las fuentes consultadas.", a: "TRAZABILIDAD" },
   { letter: "U", prefix: "Empieza por U", q: "Herramienta de búsqueda con IA que actúa como asistente de investigación en profundidad, recorre citaciones y genera panorámicas temáticas exhaustivas.", a: "UNDERMIND" },
   { letter: "V", prefix: "Empieza por V", q: "Paso imprescindible antes de dar por buena cualquier respuesta de una IA: comprobar que la información es real y está respaldada por fuentes.", a: "VERIFICACIÓN" },
-  { letter: "W", prefix: "Contiene la W", q: "Red social académica propiedad de Elsevier donde los investigadores comparten sus publicaciones y que puede servir como fuente complementaria.", a: "RESEARCHGATE" },
   { letter: "X", prefix: "Contiene la X", q: "Cuando un modelo de IA produce una respuesta, elegir sólo las partes relevantes para nuestro objetivo es un proceso de selección y e___acción.", a: "EXTRACCIÓN" },
-  { letter: "Y", prefix: "Contiene la Y", q: "Términos sinónimos o variantes que un LLM puede sugerir para ampliar una estrategia de búsqueda en PubMed. Se conocen también como entry terms o términos de...", a: "ENTRADA" },
   { letter: "Z", prefix: "Contiene la Z", q: "Proceso de convertir textos científicos en resúmenes breves y claros adaptados a distintos públicos; implica sinteti___.", a: "SINTETIZAR" }
 ];
 
