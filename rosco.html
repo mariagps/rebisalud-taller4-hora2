@@ -670,8 +670,9 @@ function presenterNext(wasCorrect) {
     correctCount++;
     document.getElementById('lc-' + currentIndex).className = 'letter-circle correct';
   } else {
-    states[currentIndex] = 'revealed';
-    document.getElementById('lc-' + currentIndex).className = 'letter-circle revealed';
+    states[currentIndex] = 'wrong';
+    wrongCount++;
+    document.getElementById('lc-' + currentIndex).className = 'letter-circle wrong';
   }
   updateScores();
   currentIndex = (currentIndex + 1) % LETTERS.length;
