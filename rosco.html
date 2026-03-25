@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rosco REBISALUD - IA para la busqueda cientifica</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1B3A5C;
+  --blue: #2563EB;
+  --blue-light: #DBEAFE;
+  --yellow: #F59E0B;
+  --yellow-light: #FEF3C7;
+  --green: #16A34A;
+  --green-light: #DCFCE7;
+  --red: #DC2626;
+  --red-light: #FEE2E2;
+  --gray: #64748B;
+  --gray-light: #F1F5F9;
+  --white: #FFFFFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, var(--navy) 0%, #1e40af 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--navy);
+}
+
+h1 {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1.2rem 0 0.3rem;
+  text-align: center;
+}
+.subtitle {
+  color: var(--yellow);
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.game-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  width: 100%;
+  padding: 0 1rem 2rem;
+}
+
+/* === ROSCO CIRCULAR === */
+.rosco-wrapper {
+  position: relative;
+  width: 420px;
+  height: 420px;
+  flex-shrink: 0;
+}
+
+.letter-circle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  border: 3px solid var(--blue);
+  background: var(--white);
+  color: var(--navy);
+  z-index: 2;
+}
+.letter-circle:hover { transform: scale(1.15); }
+.letter-circle.active {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--navy);
+  transform: scale(1.2);
+  box-shadow: 0 0 16px rgba(245,158,11,0.5);
+}
+.letter-circle.correct {
+  border-color: var(--green);
+  background: var(--green);
+  color: var(--white);
+}
+.letter-circle.wrong {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--white);
+}
+.letter-circle.pasapalabra {
+  border-color: var(--yellow);
+  background: var(--yellow-light);
+  color: var(--navy);
+}
+.letter-circle.revealed {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--navy);
+}
+
+.rosco-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1;
+}
+.score-display {
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.score-display .score-row {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+}
+.score-item { font-size: 0.8rem; font-weight: 600; }
+.score-item.correct-score { color: var(--green); }
+.score-item.wrong-score { color: var(--red); }
+.score-item.pending-score { color: var(--gray); }
+.score-item.revealed-score { color: var(--blue); }
+.timer { font-size: 1.8rem; font-weight: 700; color: var(--navy); }
+
+/* === PANEL LATERAL === */
+.question-panel {
+  flex: 1;
+  min-width: 300px;
+  max-width: 440px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.8rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+.current-letter-big {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.question-prefix {
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+
+.question-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--navy);
+  margin-bottom: 1.2rem;
+  min-height: 3rem;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--blue-light);
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 0.8rem;
+}
+.answer-input:focus { border-color: var(--blue); }
+.answer-input:disabled { background: var(--gray-light); }
+
+.btn-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn-primary { background: var(--blue); color: var(--white); }
+.btn-primary:hover:not(:disabled) { background: #1d4ed8; }
+.btn-yellow { background: var(--yellow); color: var(--navy); }
+.btn-yellow:hover:not(:disabled) { background: #d97706; }
+.btn-start { background: var(--green); color: var(--white); font-size: 1rem; padding: 0.8rem 2rem; }
+.btn-start:hover { background: #15803d; }
+.btn-reveal {
+  background: linear-gradient(135deg, var(--blue), #7c3aed);
+  color: var(--white);
+  font-size: 1rem;
+  padding: 0.8rem 1.6rem;
+}
+.btn-reveal:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8, #6d28d9);
+}
+.btn-next {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.9rem;
+  padding: 0.7rem 1.4rem;
+}
+.btn-next:hover:not(:disabled) { background: #0f2942; }
+
+.feedback-msg {
+  margin-top: 0.8rem;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  display: none;
+}
+.feedback-msg.show { display: block; }
+.feedback-msg.correct { background: var(--green-light); color: #166534; }
+.feedback-msg.wrong { background: var(--red-light); color: #991b1b; }
+.feedback-msg.revealed { background: var(--blue-light); color: var(--navy); }
+
+/* === ANSWER REVEAL === */
+.answer-reveal {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 1rem 1.2rem;
+  background: linear-gradient(135deg, var(--blue-light), #ede9fe);
+  border-radius: 10px;
+  text-align: center;
+}
+.answer-reveal.show { display: block; }
+.answer-reveal .answer-word {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+}
+.answer-reveal .answer-hint {
+  font-size: 0.8rem;
+  color: var(--gray);
+  margin-top: 0.3rem;
+}
+
+/* === PANTALLA FINAL === */
+.end-screen {
+  display: none;
+  text-align: center;
+}
+.end-screen h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--navy);
+}
+.end-screen .final-score {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--green);
+  margin: 0.5rem 0;
+}
+.end-screen .final-detail {
+  font-size: 0.9rem;
+  color: var(--gray);
+  margin-bottom: 1rem;
+}
+.end-screen .message-box {
+  background: var(--yellow-light);
+  border-left: 4px solid var(--yellow);
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* === MODE SELECTOR === */
+.mode-selector {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.mode-btn {
+  padding: 0.8rem 1.4rem;
+  border: 2px solid var(--blue-light);
+  border-radius: 10px;
+  background: var(--white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  flex: 1;
+  min-width: 140px;
+}
+.mode-btn:hover { border-color: var(--blue); background: var(--blue-light); }
+.mode-btn .mode-icon { font-size: 1.4rem; display: block; margin-bottom: 0.3rem; }
+.mode-btn .mode-label { font-size: 0.75rem; color: var(--gray); font-weight: 400; }
+
+/* === RESPONSIVE === */
+@media (max-width: 860px) {
+  .rosco-wrapper { width: 320px; height: 320px; }
+  .letter-circle { width: 32px; height: 32px; font-size: 0.78rem; }
+  .game-container { gap: 1rem; }
+}
+@media (max-width: 600px) {
+  .rosco-wrapper { width: 280px; height: 280px; }
+  .letter-circle { width: 28px; height: 28px; font-size: 0.7rem; }
+  .question-panel { padding: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<h1 id="gameTitle">Rosco REBISALUD</h1>
+<p class="subtitle" id="gameSubtitle">IA practica para la busqueda y extraccion de informacion cientifica</p>
+
+<div class="game-container">
+  <div class="rosco-wrapper" id="roscoWrapper">
+    <div class="rosco-center">
+      <div class="score-display">
+        <div class="timer" id="timer">5:00</div>
+        <div class="score-row">
+          <span class="score-item correct-score" id="correctCount">0 aciertos</span>
+          <span class="score-item wrong-score" id="wrongCount">0 fallos</span>
+        </div>
+        <span class="score-item pending-score" id="pendingCount">27 pendientes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-panel" id="questionPanel">
+    <!-- START SCREEN -->
+    <div id="startScreen" style="text-align:center; padding: 1.5rem 0;">
+      <p style="font-size:1rem; margin-bottom:0.5rem; font-weight:600;">Repasa lo aprendido en el curso</p>
+      <p id="startDesc" style="font-size:0.85rem; color:var(--gray); margin-bottom:1.5rem;">27 preguntas, una por cada letra.<br>Elige como quieres jugar:</p>
+
+      <div class="mode-selector">
+        <button class="mode-btn" onclick="startGame('solo')">
+          <span class="mode-icon">&#9997;</span>
+          Individual
+          <span class="mode-label">Escribe la respuesta</span>
+        </button>
+        <button class="mode-btn" onclick="startGame('presenter')">
+          <span class="mode-icon">&#127891;</span>
+          Presentador
+          <span class="mode-label">Lee y revela en clase</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PLAY SCREEN: SOLO MODE -->
+    <div id="playScreen" style="display:none;">
+      <div class="current-letter-big" id="currentLetterBig">A</div>
+      <div class="question-prefix" id="questionPrefix">Empieza por A:</div>
+      <div class="question-text" id="questionText"></div>
+
+      <!-- Solo mode controls -->
+      <div id="soloControls">
+        <input type="text" class="answer-input" id="answerInput" placeholder="Escribe tu respuesta..." autocomplete="off">
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnCheck" onclick="checkAnswer()">Comprobar</button>
+          <button class="btn btn-yellow" id="btnPass" onclick="pasapalabra()">Pasapalabra</button>
+        </div>
+        <div class="feedback-msg" id="feedbackMsg"></div>
+      </div>
+
+      <!-- Presenter mode controls -->
+      <div id="presenterControls" style="display:none;">
+        <div class="answer-reveal" id="answerReveal">
+          <div class="answer-word" id="answerWord"></div>
+          <div class="answer-hint" id="answerHint"></div>
+        </div>
+        <div class="btn-row" style="margin-top:1rem;">
+          <button class="btn btn-reveal" id="btnReveal" onclick="revealAnswer()">Revelar respuesta</button>
+          <button class="btn btn-next" id="btnNext" onclick="presenterNext(true)" style="display:none;">Acertaron</button>
+          <button class="btn btn-yellow" id="btnWrong" onclick="presenterNext(false)" style="display:none;">No acertaron</button>
+          <button class="btn btn-yellow" id="btnPresenterPass" onclick="presenterPass()">Pasapalabra</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- END SCREEN -->
+    <div class="end-screen" id="endScreen">
+      <h2>Rosco completado</h2>
+      <div class="final-score" id="finalScore"></div>
+      <div class="final-detail" id="finalDetail"></div>
+      <div class="message-box" id="endMessage">
+        <strong>Recuerda:</strong> la IA es una herramienta poderosa, pero nunca sustituye tu criterio profesional. Se critico con cada respuesta, conversa, repregunta y no te quedes con la primera respuesta que te de el modelo. La trazabilidad y la verificacion son lo que distinguen un buen trabajo de una busqueda superficial.
+      </div>
+      <button class="btn btn-start" onclick="location.reload()">Jugar de nuevo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_QUESTIONS = [
+  { letter: "A", prefix: "Empieza por A", q: "Proceso en el que una IA genera informacion falsa pero que suena convincente, como si fuera real.", a: "ALUCINACION" },
+  { letter: "B", prefix: "Empieza por B", q: "Tipo de busqueda clasica en bases de datos que usa operadores como AND, OR y NOT.", a: "BOOLEANA" },
+  { letter: "C", prefix: "Empieza por C", q: "Herramienta de busqueda con IA que responde preguntas en lenguaje natural y muestra el porcentaje de articulos a favor o en contra.", a: "CONSENSUS" },
+  { letter: "D", prefix: "Empieza por D", q: "Proceso en PubMed por el cual un termino ambiguo se aclara para que apunte al concepto correcto en MeSH.", a: "DESAMBIGUACION" },
+  { letter: "E", prefix: "Empieza por E", q: "Herramienta de IA que permite cribar articulos, extraer datos y construir tablas comparativas entre estudios.", a: "ELICIT" },
+  { letter: "F", prefix: "Empieza por F", q: "Tipo de pregunta clinica que se responde con datos concretos y no requiere busqueda sistematica, por ejemplo una dosis o un protocolo.", a: "FOREGROUND" },
+  { letter: "G", prefix: "Empieza por G", q: "Herramienta de IA que permite crear presentaciones ejecutivas a partir de textos, PDF o prompts.", a: "GAMMA" },
+  { letter: "H", prefix: "Contiene la H", q: "Vocabulario controlado que utiliza PubMed para indexar articulos por temas biomedicos.", a: "MESH" },
+  { letter: "I", prefix: "Empieza por I", q: "Instruccion o texto que el usuario escribe para guiar a un modelo de lenguaje; en ingles se conoce como 'prompt' y en nuestro contexto hablamos de ingenieria de...", a: "INDICACIONES" },
+  { letter: "J", prefix: "Contiene la J", q: "En una tabla de extraccion, las columnas representan variables y las filas representan cada uno de los articulos u...", a: "OBJETOS" },
+  { letter: "K", prefix: "Contiene la K", q: "Plataforma de Elsevier integrada con IA que ofrece resumenes clinicos y que muchos hospitales tienen contratada: Clinical___.", a: "KEY" },
+  { letter: "L", prefix: "Empieza por L", q: "Siglas en ingles del tipo de modelo de IA que usamos para conversar (como ChatGPT o Claude): modelo grande de...", a: "LENGUAJE" },
+  { letter: "M", prefix: "Empieza por M", q: "Base de datos bibliografica mas importante en biomedicina, gestionada por la National Library of Medicine.", a: "MEDLINE" },
+  { letter: "N", prefix: "Empieza por N", q: "Herramienta de Google que funciona como cuaderno inteligente: le subes fuentes y puedes conversar con ellas, crear resumenes o incluso podcasts.", a: "NOTEBOOKLM" },
+  { letter: "\u00d1", prefix: "Contiene la \u00d1", q: "Habilidad fundamental del bibliotecario de salud: ense\u00f1ar a los usuarios a evaluar criticamente la informacion.", a: "ENSE\u00d1ANZA" },
+  { letter: "O", prefix: "Empieza por O", q: "Herramienta de busqueda con IA disenada para preguntas clinicas rapidas, que ofrece un resumen con nivel de evidencia.", a: "OPENEVIDENCE" },
+  { letter: "P", prefix: "Empieza por P", q: "Formato para estructurar una pregunta de investigacion clinica: Paciente, Intervencion, Comparacion y Resultado.", a: "PICO" },
+  { letter: "Q", prefix: "Contiene la Q", q: "Capacidad de ir refinando una busqueda o conversacion con la IA paso a paso, sin quedarse con la primera respuesta. Se trata de repreguntar, es decir, de...", a: "RECONDUCIR" },
+  { letter: "R", prefix: "Empieza por R", q: "Cualidad de una estrategia de busqueda bien documentada que permite que otra persona la repita y obtenga los mismos resultados.", a: "REPRODUCIBILIDAD" },
+  { letter: "S", prefix: "Empieza por S", q: "Tipo de busqueda que, a diferencia de la booleana, entiende el significado de las palabras y encuentra resultados relacionados aunque no usen los mismos terminos exactos.", a: "SEMANTICA" },
+  { letter: "T", prefix: "Empieza por T", q: "Practica esencial al trabajar con IA: dejar registro de los prompts utilizados, las decisiones tomadas y las fuentes consultadas.", a: "TRAZABILIDAD" },
+  { letter: "U", prefix: "Empieza por U", q: "Herramienta de busqueda con IA que actua como asistente de investigacion en profundidad, recorre citaciones y genera panoramicas tematicas exhaustivas.", a: "UNDERMIND" },
+  { letter: "V", prefix: "Empieza por V", q: "Paso imprescindible antes de dar por buena cualquier respuesta de una IA: comprobar que la informacion es real y esta respaldada por fuentes.", a: "VERIFICACION" },
+  { letter: "W", prefix: "Contiene la W", q: "Red social academica propiedad de Elsevier donde los investigadores comparten sus publicaciones y que puede servir como fuente complementaria.", a: "RESEARCHGATE" },
+  { letter: "X", prefix: "Contiene la X", q: "Cuando un modelo de IA produce una respuesta, elegir solo las partes relevantes para nuestro objetivo es un proceso de seleccion y e___accion.", a: "EXTRACCION" },
+  { letter: "Y", prefix: "Contiene la Y", q: "Terminos sinonimos o variantes que un LLM puede sugerir para ampliar una estrategia de busqueda en PubMed. Se conocen tambien como entry terms o terminos de...", a: "ENTRADA" },
+  { letter: "Z", prefix: "Contiene la Z", q: "Proceso de convertir textos cientificos en resumenes breves y claros adaptados a distintos publicos; implica sinteti___.", a: "SINTETIZAR" }
+];
+
+let QUESTIONS = DEFAULT_QUESTIONS;
+let LETTERS = QUESTIONS.map(q => q.letter);
+let states = {};
+let currentIndex = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let timerInterval = null;
+let timeLeft = 300;
+let gameActive = false;
+let gameMode = 'solo'; // 'solo' or 'presenter'
+
+// --- JSON loading via ?json= URL param (hidden feature) ---
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const jsonUrl = params.get('json');
+  if (jsonUrl) {
+    fetch(jsonUrl)
+      .then(r => r.json())
+      .then(data => { if (data.questions) loadCustomQuestions(data); })
+      .catch(() => {});
+  }
+})();
+
+function loadCustomQuestions(data) {
+  data.questions.forEach(q => { if (!q.prefix) q.prefix = 'Letra ' + q.letter; });
+  QUESTIONS = data.questions;
+  LETTERS = QUESTIONS.map(q => q.letter);
+  timeLeft = data.time || 300;
+  if (data.title) document.getElementById('gameTitle').textContent = data.title;
+  if (data.subtitle) document.getElementById('gameSubtitle').textContent = data.subtitle;
+  if (data.endMessage) document.getElementById('endMessage').innerHTML = '<strong>Recuerda:</strong> ' + data.endMessage;
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  document.getElementById('timer').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+  document.getElementById('pendingCount').textContent = QUESTIONS.length + ' pendientes';
+  rebuildRosco();
+}
+
+function rebuildRosco() {
+  const wrapper = document.getElementById('roscoWrapper');
+  wrapper.querySelectorAll('.letter-circle').forEach(el => el.remove());
+  states = {};
+  buildRoscoCircles();
+}
+
+function buildRoscoCircles() {
+  const wrapper = document.getElementById('roscoWrapper');
+  const cx = wrapper.offsetWidth / 2;
+  const cy = wrapper.offsetHeight / 2;
+  const r = Math.min(cx, cy) - 24;
+
+  LETTERS.forEach((letter, i) => {
+    const angle = (i / LETTERS.length) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + r * Math.cos(angle) - 20;
+    const y = cy + r * Math.sin(angle) - 20;
+
+    const el = document.createElement('div');
+    el.className = 'letter-circle';
+    el.id = 'lc-' + i;
+    el.textContent = letter;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.onclick = () => { if (gameActive) jumpTo(i); };
+    wrapper.appendChild(el);
+    states[i] = 'pending';
+  });
+}
+
+function startGame(mode) {
+  gameMode = mode;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('playScreen').style.display = 'block';
+
+  if (mode === 'presenter') {
+    document.getElementById('soloControls').style.display = 'none';
+    document.getElementById('presenterControls').style.display = 'block';
+    // No timer in presenter mode - replace with question counter
+    document.getElementById('timer').style.display = 'none';
+  } else {
+    document.getElementById('soloControls').style.display = 'block';
+    document.getElementById('presenterControls').style.display = 'none';
+  }
+
+  gameActive = true;
+  currentIndex = 0;
+  showQuestion();
+  if (mode === 'solo') startTimer();
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById('timer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  if (timeLeft <= 30) document.getElementById('timer').style.color = 'var(--red)';
+}
+
+function showQuestion() {
+  let found = false;
+  let startIdx = currentIndex;
+  for (let i = 0; i < LETTERS.length; i++) {
+    let idx = (startIdx + i) % LETTERS.length;
+    if (states[idx] === 'pending' || states[idx] === 'pasapalabra') {
+      currentIndex = idx;
+      found = true;
+      break;
+    }
+  }
+  if (!found) { endGame(); return; }
+
+  const q = QUESTIONS[currentIndex];
+  document.querySelectorAll('.letter-circle').forEach(el => el.classList.remove('active'));
+  document.getElementById('lc-' + currentIndex).classList.add('active');
+
+  document.getElementById('currentLetterBig').textContent = q.letter;
+  document.getElementById('questionPrefix').textContent = q.prefix + ':';
+  document.getElementById('questionText').textContent = q.q;
+
+  if (gameMode === 'solo') {
+    document.getElementById('answerInput').value = '';
+    document.getElementById('answerInput').disabled = false;
+    document.getElementById('answerInput').focus();
+    document.getElementById('btnCheck').disabled = false;
+    document.getElementById('btnPass').disabled = false;
+    hideFeedback();
+  } else {
+    // Presenter mode: reset reveal
+    document.getElementById('answerReveal').classList.remove('show');
+    document.getElementById('btnReveal').style.display = '';
+    document.getElementById('btnNext').style.display = 'none';
+    document.getElementById('btnWrong').style.display = 'none';
+    document.getElementById('btnPresenterPass').style.display = '';
+  }
+}
+
+function jumpTo(idx) {
+  if (states[idx] === 'correct' || states[idx] === 'wrong' || states[idx] === 'revealed') return;
+  currentIndex = idx;
+  showQuestion();
+}
+
+// === SOLO MODE ===
+function normalize(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim()
+    .replace(/[^A-Z0-9]/g, '');
+}
+
+function checkAnswer() {
+  if (!gameActive || gameMode !== 'solo') return;
+  const input = document.getElementById('answerInput').value;
+  if (!input.trim()) return;
+
+  const q = QUESTIONS[currentIndex];
+  const userNorm = normalize(input);
+  const correctNorm = normalize(q.a);
+  const isCorrect = userNorm === correctNorm || levenshtein(userNorm, correctNorm) <= Math.min(2, Math.floor(correctNorm.length * 0.25));
+
+  if (isCorrect) {
+    states[currentIndex] = 'correct';
+    correctCount++;
+    document.getElementById('lc-' + currentIndex).className = 'letter-circle correct';
+    showFeedback(true, 'Correcto: ' + q.a);
+  } else {
+    states[currentIndex] = 'wrong';
+    wrongCount++;
+    document.getElementById('lc-' + currentIndex).className = 'letter-circle wrong';
+    showFeedback(false, 'La respuesta era: ' + q.a);
+  }
+
+  updateScores();
+  document.getElementById('answerInput').disabled = true;
+  document.getElementById('btnCheck').disabled = true;
+  document.getElementById('btnPass').disabled = true;
+
+  setTimeout(() => {
+    currentIndex = (currentIndex + 1) % LETTERS.length;
+    showQuestion();
+    checkIfDone();
+  }, 1800);
+}
+
+function pasapalabra() {
+  if (!gameActive) return;
+  states[currentIndex] = 'pasapalabra';
+  document.getElementById('lc-' + currentIndex).className = 'letter-circle pasapalabra';
+  currentIndex = (currentIndex + 1) % LETTERS.length;
+  showQuestion();
+  checkIfDone();
+}
+
+// === PRESENTER MODE ===
+function revealAnswer() {
+  if (!gameActive) return;
+  const q = QUESTIONS[currentIndex];
+  document.getElementById('answerWord').textContent = q.a;
+  document.getElementById('answerHint').textContent = '';
+  document.getElementById('answerReveal').classList.add('show');
+  document.getElementById('btnReveal').style.display = 'none';
+  document.getElementById('btnPresenterPass').style.display = 'none';
+  document.getElementById('btnNext').style.display = '';
+  document.getElementById('btnWrong').style.display = '';
+}
+
+function presenterNext(wasCorrect) {
+  if (!gameActive) return;
+  if (wasCorrect) {
+    states[currentIndex] = 'correct';
+    correctCount++;
+    document.getElementById('lc-' + currentIndex).className = 'letter-circle correct';
+  } else {
+    states[currentIndex] = 'revealed';
+    document.getElementById('lc-' + currentIndex).className = 'letter-circle revealed';
+  }
+  updateScores();
+  currentIndex = (currentIndex + 1) % LETTERS.length;
+  showQuestion();
+  checkIfDone();
+}
+
+function presenterPass() {
+  if (!gameActive) return;
+  states[currentIndex] = 'pasapalabra';
+  document.getElementById('lc-' + currentIndex).className = 'letter-circle pasapalabra';
+  currentIndex = (currentIndex + 1) % LETTERS.length;
+  showQuestion();
+  checkIfDone();
+}
+
+// === COMMON ===
+function checkIfDone() {
+  const remaining = Object.values(states).filter(s => s === 'pending' || s === 'pasapalabra').length;
+  if (remaining === 0) endGame();
+}
+
+function updateScores() {
+  const remaining = Object.values(states).filter(s => s === 'pending' || s === 'pasapalabra').length;
+  document.getElementById('correctCount').textContent = correctCount + ' acierto' + (correctCount !== 1 ? 's' : '');
+  document.getElementById('wrongCount').textContent = wrongCount + ' fallo' + (wrongCount !== 1 ? 's' : '');
+  document.getElementById('pendingCount').textContent = remaining + ' pendiente' + (remaining !== 1 ? 's' : '');
+}
+
+function showFeedback(correct, text) {
+  const el = document.getElementById('feedbackMsg');
+  el.className = 'feedback-msg show ' + (correct ? 'correct' : 'wrong');
+  el.textContent = text;
+}
+function hideFeedback() {
+  document.getElementById('feedbackMsg').className = 'feedback-msg';
+}
+
+function endGame() {
+  gameActive = false;
+  clearInterval(timerInterval);
+  document.getElementById('playScreen').style.display = 'none';
+  const endScreen = document.getElementById('endScreen');
+  endScreen.style.display = 'block';
+
+  document.getElementById('finalScore').textContent = correctCount + ' / ' + LETTERS.length;
+  const pct = Math.round(correctCount / LETTERS.length * 100);
+  document.getElementById('finalDetail').textContent = pct + '% de aciertos \u00B7 ' + wrongCount + ' fallo' + (wrongCount !== 1 ? 's' : '');
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m + 1}, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = Math.min(
+        dp[i-1][j] + 1,
+        dp[i][j-1] + 1,
+        dp[i-1][j-1] + (a[i-1] !== b[j-1] ? 1 : 0)
+      );
+  return dp[m][n];
+}
+
+document.addEventListener('keydown', e => {
+  if (!gameActive) return;
+  if (e.key === 'Enter') {
+    if (gameMode === 'solo') checkAnswer();
+  }
+  // Presenter keyboard shortcuts
+  if (gameMode === 'presenter') {
+    if (e.key === ' ' || e.code === 'Space') {
+      e.preventDefault();
+      const revealBtn = document.getElementById('btnReveal');
+      if (revealBtn.style.display !== 'none') revealAnswer();
+    }
+    if (e.key === 'ArrowRight' || e.key === 'Enter') {
+      const nextBtn = document.getElementById('btnNext');
+      if (nextBtn.style.display !== 'none') presenterNext(true);
+    }
+    if (e.key === 'ArrowDown') {
+      const wrongBtn = document.getElementById('btnWrong');
+      if (wrongBtn.style.display !== 'none') presenterNext(false);
+    }
+    if (e.key === 'ArrowLeft') {
+      presenterPass();
+    }
+  }
+});
+
+// Init
+buildRoscoCircles();
+</script>
+</body>
+</html>
